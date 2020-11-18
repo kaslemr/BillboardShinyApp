@@ -131,4 +131,32 @@ function(input, output, session) {
           fit
       }
     })
+    
+    runPredict <- eventReactive(input$submitParamVals, {
+      inputs <- c("danceabilityInput","energyInput","loudnessInput",
+                  "speechinessyInput","acousticnessInput","instrumentalnessInput",
+                  "livenessInput","valenceInput","tempoInput","durationInput",
+                  "explicitInput")
+      df <- data.frame()
+      for (inputVal in inputs){
+        variableName <- substr(inputVal,1,(nchar(inputVal)+1)-6)
+        currentVal <- input$inputVal
+        if(length(currentVal) > 0){
+          df$variableName <- currentVal
+        }
+      }
+      
+      if (input$supervisedModelSelect == "Linear Regression"){
+        fit <- lm1()
+        predict(fit, newdata=df)
+      }
+      else if (input$supervisedModelSelect == "Random Forest"){
+        fit <- rf1()
+        predict(fit, newdata=inputVals)
+      }
+    })
+    
+    output$prediction <- renderPrint({
+      runPredict()
+    })
 }

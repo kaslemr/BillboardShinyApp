@@ -140,6 +140,32 @@ dashboardPage(
                   ),
                   fluidRow(
                     verbatimTextOutput("supervisedSummary")
+                  ),
+                  fluidRow(
+                    box(
+                      textInput("danceabilityInput","Danceability"),
+                      textInput("energyInput","Energy"),
+                      textInput("loudnessInput","Loudness"),
+                      textInput("speechinessyInput","Speechiness"),
+                      width = 4
+                    ),
+                    box(
+                      textInput("acousticnessInput","Acousticness"),
+                      textInput("instrumentalnessInput","Instrumentalness"),
+                      textInput("livenessInput","Liveness"),
+                      textInput("valenceInput","Valence"),
+                      width = 4
+                    ),
+                    box(
+                      textInput("tempoInput","Tempo"),
+                      textInput("durationInput","Duration (Minutes)"),
+                      textInput("explicitInput","Explicit"),
+                      actionButton("submitParamVals","Submit and Run"),
+                      width = 4
+                    )
+                  ),
+                  fluidRow(
+                    verbatimTextOutput("prediction")
                   )
             ),
             
