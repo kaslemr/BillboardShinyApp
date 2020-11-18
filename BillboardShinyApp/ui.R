@@ -12,6 +12,7 @@ library(shinydashboard)
 library(billboard)
 library(tidyverse)
 library(DT)
+library(randomForest)
 
 # Define UI for application that draws a histogram
 dashboardPage(
@@ -107,7 +108,39 @@ dashboardPage(
             
             # Supervised Learning Tab
             tabItem(tabName = "supervised",
-                    h2("Predictive Modeling")
+                    h2("Predictive Modeling"),
+                    fluidRow(
+                      box(checkboxGroupInput("varsSupervisedReg", "Variables to include in model:",
+                                         c("danceability",
+                                           "energy",
+                                           "loudness",
+                                           "speechiness",
+                                           "acousticness",
+                                           "instrumentalness",
+                                           "liveness",
+                                           "valence",
+                                           "tempo",
+                                           "duration_mins",
+                                           "explicit"),
+                                         selected="danceability")
+                          ),
+                      box(radioButtons("supervisedModelSelect",
+                                     "Select Model",
+                                     choices = list("Linear Regression",
+                                                    "Random Forest"
+                                                    )
+                                     )
+                          ),
+                    box(conditionalPanel(
+                      condition = "input.supervisedModelSelect == 'Random Forest'",
+                      sliderInput("treeSlider", label = strong("Number of Trees"), min = 10, 
+                                max = 500, value = c(100), sep="")
+                      )
+                    )
+                  ),
+                  fluidRow(
+                    verbatimTextOutput("supervisedSummary")
+                  )
             ),
             
             # Data Tab

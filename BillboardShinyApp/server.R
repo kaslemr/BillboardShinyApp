@@ -13,12 +13,15 @@ library(shinydashboard)
 library(billboard)
 library(tidyverse)
 library(DT)
+library(randomForest)
 
 # load datasets
 data("wiki_hot_100s")
 data("spotify_track_data")
 spotify_track_data['duration_mins'] <- spotify_track_data['duration_ms'] / 1000 / 60
 spotify_track_data['decade'] <- paste0(substr(spotify_track_data$year,1,3),0)
+spotify_track_data$yearInt <- as.integer(spotify_track_data$year)
+
 
 function(input, output, session) {
     
@@ -111,5 +114,21 @@ function(input, output, session) {
 
       df
     })
-    
+    # Supervised Learning
+    data_2010s <- spotify_track_data[spotify_track_data$year >= "2010",]
+  
+    lm1 <- reactive({lm(reformulate(termlabels = input$varsSupervisedReg, response="year"), data = spotify_track_data)})
+    rf1 <- reactive({randomForest(formula = reformulate(termlabels = input$varsSupervisedReg, response="yearInt"), data = spotify_track_data,ntree=as.integer(input$treeSlider))})
+
+    output$supervisedSummary <- renderPrint({
+      if(input$supervisedModelSelect == "Linear Regression"){
+        fit <- lm1()
+        names(fit$coefficients) <- c("Intercept", input$varsSupervisedReg)
+        summary(fit)
+      }
+      else if (input$supervisedModelSelect == "Random Forest"){
+          fit <- rf1()
+          fit
+      }
+    })
 }
