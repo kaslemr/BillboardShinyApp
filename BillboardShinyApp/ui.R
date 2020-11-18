@@ -10,6 +10,8 @@
 library(shiny)
 library(shinydashboard)
 library(billboard)
+library(tidyverse)
+library(DT)
 
 # Define UI for application that draws a histogram
 dashboardPage(
@@ -52,12 +54,49 @@ dashboardPage(
             tabItem(tabName = "explore",
                     h2("Exploratory Analysis"),
                     fluidRow(
-                        box(plotOutput("plot1", height = 250)),
-                        
-                        box(
-                            title = "Controls",
-                            sliderInput("slider", "Number of observations:", 1, 100, 50)
+                        selectInput("varsToSelect",
+                                    "Variables to Summarize",
+                                    choices=list("danceability",
+                                                 "energy",
+                                                 "loudness",
+                                                 "speechiness",
+                                                 "acousticness",
+                                                 "instrumentalness",
+                                                 "liveness",
+                                                 "valence",
+                                                 "tempo",
+                                                 "duration_mins",
+                                                 "explicit"
+                                                 )
+                                    ),
+                    ),
+                    fluidRow(
+                        h4("Yearly Trends in Hit Songs", align="center")
+                    ),
+                    fluidRow(
+                        box(plotOutput("yearPlot"), width=12)
+                    ),
+                    # Slider date range
+                    fluidRow(
+                        sliderInput("slider1", label = strong("Year Range"), min = 1960, 
+                                max = 2016, value = c(1960, 2016), sep="")
+                    ),
+                    fluidRow(
+                        h4("Most Popular Artists", align="center")
+                    ),
+                    fluidRow(
+                        box(plotOutput("artistPlot"), width=12)
+                    ),
+                    fluidRow(
+                        radioButtons("summarizeTableBy",
+                                     "Summarize Table By",
+                                     choices = list("Year",
+                                                    "Artist",
+                                                    "Decade")
                         )
+                    ),
+                    fluidRow(
+                      DT::dataTableOutput("summaryTable")
                     )
             ),
             
