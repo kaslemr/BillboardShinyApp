@@ -103,7 +103,25 @@ dashboardPage(
             
             # Unsupervised Learning Tab
             tabItem(tabName = "unsupervised",
-                    h2("Clustering Analysis")
+                    h2("Clustering Analysis"),
+                    fluidRow(box(checkboxGroupInput("varsPCR", "Variables to include in model:",
+                                           c("danceability",
+                                             "energy",
+                                             "loudness",
+                                             "speechiness",
+                                             "acousticness",
+                                             "instrumentalness",
+                                             "liveness",
+                                             "valence",
+                                             "tempo",
+                                             "duration_mins",
+                                             "explicit"),
+                                           selected=c("danceability","energy"))
+                    )),
+                    fluidRow(
+                      box(plotOutput("pcrBiPlot")),
+                      box(plotOutput("pcrScree"))
+                    ),
             ),
             
             # Supervised Learning Tab
@@ -171,7 +189,16 @@ dashboardPage(
             
             # Data Tab
             tabItem(tabName = "data",
-                    h2("Raw Data")
+                    h2("Raw Data"),
+                    fluidRow(
+                      sliderInput("sliderDataTable", label = strong("Year Range"), min = 1960, 
+                                  max = 2016, value = c(1960, 2016), sep="")
+                    ),
+                    fluidRow(downloadButton("downloadData", "Download")),
+                    fluidRow(
+                      box(DT::dataTableOutput("rawDataTable")
+                      )
+                    )
             )
         )
     )

@@ -159,4 +159,35 @@ function(input, output, session) {
     output$prediction <- renderPrint({
       runPredict()
     })
+    
+    # PCR Analysis
+    PCs <- reactive({prcomp(select(spotify_track_data, input$varsPCR) , scale = TRUE)})
+    
+    output$pcrBiPlot<- renderPlot({
+      PCs <- PCs()
+      biplot(PCs, xlabs = rep(".", nrow(spotify_track_data)), cex = 1.2)
+    })
+    
+    output$pcrScree<- renderPlot({
+      PCs <- PCs()
+      screeplot(PCs, type = "lines") #scree plot used for visual
+    })
+    
+    # data tab
+    renderRawDataTable <- reactive({
+      yearRangeInput <- input$sliderDataTable
+      df <- spotify_track_data %>% filter(year >= yearRangeInput[1] & year <= yearRangeInput[2])
+    })
+    output$rawDataTable <- DT::renderDataTable({renderRawDataTable()})
+    
+    # Download data as CSV
+    # Downloadable csv of selected dataset ----
+    output$downloadData <- downloadHandler(
+      filename = paste("billboardSongs", ".csv", sep = ""),
+      content = function(file) {
+        write.csv(renderRawDataTable(), file, row.names = FALSE)
+      }
+    )
+    
+    
 }
