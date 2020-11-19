@@ -31,21 +31,33 @@ function(input, output, session) {
     #})
     
     #create year plot in exploratory data
+    renderYearPlot <- reactive({
+      #get filtered data
+      var <- input$varsToSelect
+      newData <- spotify_track_data %>% group_by(year) %>%
+        summarise(varMean = mean(get(var), na.rm = TRUE))
+      
+      g <- ggplot(newData, aes(x = year, y = varMean, group = 1)) +
+        geom_point() + 
+        geom_line() + 
+        geom_smooth() +
+        theme(axis.text.x = element_text(angle = 30, vjust = 0.25, hjust=0.2)) +
+        ylab(var) + 
+        ggtitle(paste("Average", var, "by year"))
+    })
+    
     output$yearPlot <- renderPlot({
-        #get filtered data
-        var <- input$varsToSelect
-        newData <- spotify_track_data %>% group_by(year) %>%
-                    summarise(varMean = mean(get(var), na.rm = TRUE))
-        
-        g <- ggplot(newData, aes(x = year, y = varMean, group = 1)) +
-            geom_point() + 
-            geom_line() + 
-            geom_smooth() +
-            theme(axis.text.x = element_text(angle = 30, vjust = 0.25, hjust=0.2)) +
-            ylab(var) + 
-            ggtitle(paste("Average", var, "by year"))
+        g <- renderYearPlot()
         g
     })
+    
+    ## Save Plot 
+    output$downloadPlot <- downloadHandler(
+      filename = function() { paste("yearTrend", '.png', sep='') },
+      content = function(file) {
+        ggsave(file, plot = renderYearPlot(), device = "png")
+      }
+    )
     
     #create hit songs by artist plot in exploratory data
     output$artistPlot <- renderPlot({
@@ -197,6 +209,4 @@ function(input, output, session) {
         write.csv(renderRawDataTable(), file, row.names = FALSE)
       }
     )
-    
-    
 }

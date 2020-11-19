@@ -78,6 +78,7 @@ dashboardPage(
                     fluidRow(
                         h4("Yearly Trends in Hit Songs", align="center")
                     ),
+                    fluidRow(fluidRow(downloadButton("downloadPlot", "Download Plot"))),
                     fluidRow(
                         box(plotOutput("yearPlot"), width=12)
                     ),
