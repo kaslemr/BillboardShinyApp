@@ -47,7 +47,11 @@ dashboardPage(
                     h4("Clustering Analysis"),
                     "This tab allows you to perform a principal components analysis on a set of variables.",
                     h4("Predictive Modeling"),
-                    "This tab allows you to use regression analysis or random forest to create a predictive model and apply the model on new data to make predictions.",
+                    "This tab allows you to use regression analysis in the form of ",
+                    withMathJax(
+                      "$$\\hat{Y}_i = \\hat{\\beta}_0 + \\hat{\\beta}_1 X_i + \\hat{\\epsilon}_i$$"
+                    ),
+                    " or random forest to create a predictive model and apply the model on new data to make predictions.",
                     h4("Data"),
                     "This tab allows you view the raw data in tabular form, subset the data, and export the data."
             ),

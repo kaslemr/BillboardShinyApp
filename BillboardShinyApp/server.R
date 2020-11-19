@@ -118,6 +118,15 @@ function(input, output, session) {
     data_2010s <- spotify_track_data[spotify_track_data$year >= "2010",]
   
     lm1 <- reactive({lm(reformulate(termlabels = input$varsSupervisedReg, response="year"), data = spotify_track_data)})
+    
+
+    output$lmEquation <- renderUI({
+      billboard.lm <- lm(reformulate(termlabels = input$varsSupervisedReg, response="year"), data = spotify_track_data)
+      cc <- billboard.lm$coefficients
+      eqn <- paste("Y =", paste(round(cc[1],2), paste(round(cc[-1],2), names(cc[-1]), sep=" * ", collapse=" + "), sep=" + "), "+ e")
+      withMathJax(eqn)
+    })
+    
     rf1 <- reactive({randomForest(formula = reformulate(termlabels = input$varsSupervisedReg, response="yearInt"), data = spotify_track_data,ntree=as.integer(input$treeSlider))})
 
     output$supervisedSummary <- renderPrint({
