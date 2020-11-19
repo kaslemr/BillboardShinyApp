@@ -14,6 +14,7 @@ library(billboard)
 library(tidyverse)
 library(DT)
 library(randomForest)
+library(plotly)
 
 # load datasets
 data("wiki_hot_100s")
@@ -29,6 +30,13 @@ function(input, output, session) {
     #    newData <- spotify_track_data %>% group_by(year) %>%
     #        summarise(danceabilityMean = mean(danceability, na.rm = TRUE))
     #})
+    
+    yearDataSet <- reactive({
+      #get filtered data
+      var <- input$varsToSelect
+      newData <- spotify_track_data %>% group_by(year) %>%
+        summarise(varMean = mean(get(var), na.rm = TRUE))
+    })
     
     #create year plot in exploratory data
     renderYearPlot <- reactive({
@@ -46,7 +54,12 @@ function(input, output, session) {
         ggtitle(paste("Average", var, "by year"))
     })
     
-    output$yearPlot <- renderPlot({
+    output$yearPlot <- renderPlotly({
+      df <- yearDataSet()
+      fig <- plot_ly(df, x = ~year, y = ~varMean, type = 'scatter', mode = 'markers')
+    })
+    
+    output$plot <- renderPlot({
         g <- renderYearPlot()
         g
     })

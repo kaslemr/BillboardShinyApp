@@ -13,6 +13,7 @@ library(billboard)
 library(tidyverse)
 library(DT)
 library(randomForest)
+library(plotly)
 
 # Define UI for application that draws a histogram
 dashboardPage(
@@ -58,29 +59,29 @@ dashboardPage(
             # Exploratory Analysis Tab
             tabItem(tabName = "explore",
                     h2("Exploratory Analysis"),
-                    fluidRow(
-                        selectInput("varsToSelect",
-                                    "Variables to Summarize",
-                                    choices=list("danceability",
-                                                 "energy",
-                                                 "loudness",
-                                                 "speechiness",
-                                                 "acousticness",
-                                                 "instrumentalness",
-                                                 "liveness",
-                                                 "valence",
-                                                 "tempo",
-                                                 "duration_mins",
-                                                 "explicit"
-                                                 )
-                                    ),
-                    ),
-                    fluidRow(
-                        h4("Yearly Trends in Hit Songs", align="center")
-                    ),
                     fluidRow(fluidRow(downloadButton("downloadPlot", "Download Plot"))),
                     fluidRow(
-                        box(plotOutput("yearPlot"), width=12)
+                      selectInput("varsToSelect",
+                                  "Variables to Summarize",
+                                  choices=list("danceability",
+                                               "energy",
+                                               "loudness",
+                                               "speechiness",
+                                               "acousticness",
+                                               "instrumentalness",
+                                               "liveness",
+                                               "valence",
+                                               "tempo",
+                                               "duration_mins",
+                                               "explicit"
+                                  )
+                      ),
+                    ),
+                    fluidRow(
+                      h4("Yearly Trends in Hit Songs", align="center")
+                    ),
+                    fluidRow(
+                      box(plotlyOutput("yearPlot"), width=12)
                     ),
                     # Slider date range
                     fluidRow(
